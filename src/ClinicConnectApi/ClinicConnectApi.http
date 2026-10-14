@@ -1,0 +1,55 @@
+@ClinicConnectApi_HostAddress = http://localhost:5109
+
+### Get all doctors
+GET {{ClinicConnectApi_HostAddress}}/api/doctors
+Accept: application/json
+
+### Add new doctor
+POST {{ClinicConnectApi_HostAddress}}/api/doctors
+Content-Type: application/json
+
+{
+    "firstNAME": "Tom",
+    "lastName": "Riddle",
+    "specialization": "Orthopaedist",
+    "consultationFee": 200.00
+}
+
+### Delete doctor
+Delete {{ClinicConnectApi_HostAddress}}/api/doctors/1
+
+### Get all patients
+GET {{ClinicConnectApi_HostAddress}}/api/patients
+Accept: application/json
+
+### Add new patient
+POST {{ClinicConnectApi_HostAddress}}/api/patients
+Content-Type: application/json
+
+{
+    "firstNAME": "Brynden",
+    "lastName": "Rivers",
+    "pesel": "03241511955"
+}
+
+### Delete patient
+DELETE {{ClinicConnectApi_HostAddress}}/api/patients/1
+
+### Get all appointments
+GET {{ClinicConnectApi_HostAddress}}/api/appointments
+Accept: application/json
+
+### Add new appointment
+POST {{ClinicConnectApi_HostAddress}}/api/appointments
+Content-Type: application/json
+
+{
+    "doctorId": 3,
+    "patientId": 1,
+    "appointmentDate": "2026-10-20T14:30:00",
+    "isCompleted": false,
+    "notes": ""
+}
+
+### Delete appointment
+DELETE {{ClinicConnectApi_HostAddress}}/api/appointments/1
