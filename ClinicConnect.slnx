@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/ClinicConnectApi/ClinicConnectApi.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ClinicConnectApi.Tests/ClinicConnectApi.Tests.csproj" />
+  </Folder>
 </Solution>
