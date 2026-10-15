@@ -58,6 +58,11 @@ namespace ClinicConnectApi.Services
             {
                 throw new KeyNotFoundException("Patient doesn't exist");
             }
+            bool hasAppointments = await _db.Appointments.AnyAsync(a => a.PatientId == id);
+            if (hasAppointments)
+            {
+                throw new InvalidOperationException("Patient has appointments and can't be deleted");
+            }
             _db.Remove(patient);
             await _db.SaveChangesAsync();
         }

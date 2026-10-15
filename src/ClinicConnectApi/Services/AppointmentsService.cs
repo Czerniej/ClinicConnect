@@ -34,12 +34,12 @@ namespace ClinicConnectApi.Services
             {
                 throw new ArgumentException("Incorrect input");
             }
-            bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == dto.AppointmentDate && a.IsCompleted == false);
+            bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == dto.AppointmentDate);
             if (isBusyDoctor)
             {
                 throw new InvalidOperationException("Doctor already has Appointment at this date");
             }
-            bool isBusyPatient = await _db.Appointments.AnyAsync(a => a.PatientId == dto.PatientId && a.AppointmentDate == dto.AppointmentDate && a.IsCompleted == false);
+            bool isBusyPatient = await _db.Appointments.AnyAsync(a => a.PatientId == dto.PatientId && a.AppointmentDate == dto.AppointmentDate);
             if (isBusyPatient)
             {
                 throw new InvalidOperationException("Patient already has Appointment at this date");
