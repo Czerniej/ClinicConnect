@@ -1,5 +1,6 @@
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
+using ClinicConnectApi.Exceptions;
 using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -28,21 +29,19 @@ namespace ClinicConnectApi.Services
         }
         public async Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto)
         {
-            var doctor = await _db.Doctors.FindAsync(dto.DoctorId);
-            var patient = await _db.Patients.FindAsync(dto.PatientId);
-            if (doctor == null || patient == null)
-            {
-                throw new ArgumentException("Incorrect input");
-            }
+            var doctor = await _db.Doctors.FindAsync(dto.DoctorId)
+                ?? throw new NotFoundException($"Doctor with id: {dto.DoctorId} wos not found");
+            var patient = await _db.Patients.FindAsync(dto.PatientId)
+                ?? throw new NotFoundException($"Patient with id: {dto.PatientId} was not found");
             bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == dto.AppointmentDate);
             if (isBusyDoctor)
             {
-                throw new InvalidOperationException("Doctor already has Appointment at this date");
+                throw new NotFoundException("Doctor already has appointment at this date");
             }
             bool isBusyPatient = await _db.Appointments.AnyAsync(a => a.PatientId == dto.PatientId && a.AppointmentDate == dto.AppointmentDate);
             if (isBusyPatient)
             {
-                throw new InvalidOperationException("Patient already has Appointment at this date");
+                throw new NotFoundException("Patient already has appointment at this date");
             }
             var appointment = new Appointment
             {
@@ -69,9 +68,9 @@ namespace ClinicConnectApi.Services
             var appointment = await _db.Appointments.FindAsync(id);
             if (appointment == null)
             {
-                throw new KeyNotFoundException("Appointment doesn't exist");
+                throw new NotFoundException($"Appointment with id: {id} was not found");
             }
-            _db.Remove(appointment);
+            _db.Appointments.Remove(appointment);
             await _db.SaveChangesAsync();
         }
     }
