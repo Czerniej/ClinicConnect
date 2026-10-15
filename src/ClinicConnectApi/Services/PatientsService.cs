@@ -1,5 +1,6 @@
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
+using ClinicConnectApi.Exceptions;
 using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace ClinicConnectApi.Services
             var existingPatient = await _db.Patients.FirstOrDefaultAsync(p => p.Pesel == dto.Pesel);
             if (existingPatient != null)
             {
-                throw new InvalidOperationException("Patient already exists");
+                throw new ConflictException("Patient with this pesel already exists");
             }
             var patient = new Patient
             {
@@ -53,17 +54,14 @@ namespace ClinicConnectApi.Services
         }
         public async Task DeletePatientAsync(int id)
         {
-            var patient = await _db.Patients.FindAsync(id);
-            if (patient == null)
-            {
-                throw new KeyNotFoundException("Patient doesn't exist");
-            }
+            var patient = await _db.Patients.FindAsync(id)
+                ?? throw new NotFoundException($"Patient with id: {id} was not found");
             bool hasAppointments = await _db.Appointments.AnyAsync(a => a.PatientId == id);
             if (hasAppointments)
             {
-                throw new InvalidOperationException("Patient has appointments and can't be deleted");
+                throw new ConflictException("Patient has appointments and can't be deleted");
             }
-            _db.Remove(patient);
+            _db.Patients.Remove(patient);
             await _db.SaveChangesAsync();
         }
     }

@@ -16,60 +16,22 @@ namespace ClinicConnectApi.Controllers
             _patientsService = patientsService;
         }
         [HttpGet]
-        public async Task<IResult> GetAll()
+        public async Task<ActionResult<IEnumerable<PatientResponseDto>>> GetAll()
         {
             var patients = await _patientsService.GetAllPatientsAsync();
-            return Results.Ok(patients);
+            return Ok(patients);
         }
         [HttpPost]
-        public async Task<IResult> Create(CreatePatientDto dto)
+        public async Task<ActionResult<PatientResponseDto>> Create(CreatePatientDto dto)
         {
-            try
-            {
-                var newPatient = await _patientsService.CreatePatientAsync(dto);
-                return Results.Ok(newPatient);
-            }
-            catch (ArgumentException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return Results.NotFound(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Results.Problem("Server Error");
-            }
+            var newPatient = await _patientsService.CreatePatientAsync(dto);
+            return StatusCode(StatusCodes.Status201Created, newPatient);
         }
-        [HttpDelete("{id}")]
-        public async Task<IResult> Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _patientsService.DeletePatientAsync(id);
-                return Results.Ok("Successfully deleted");
-            }
-            catch (ArgumentException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return Results.NotFound(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Results.Problem("Server Error");
-            }
+            await _patientsService.DeletePatientAsync(id);
+            return NoContent();
         }
     }
 }
