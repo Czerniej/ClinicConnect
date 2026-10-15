@@ -1,5 +1,6 @@
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
+using ClinicConnectApi.Exceptions;
 using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -52,17 +53,14 @@ namespace ClinicConnectApi.Services
         }
         public async Task DeleteDoctorAsync(int id)
         {
-            var doctor = await _db.Doctors.FindAsync(id);
-            if (doctor == null)
-            {
-                throw new KeyNotFoundException("Doctor doesn't exist");
-            }
+            var doctor = await _db.Doctors.FindAsync(id)
+                ?? throw new NotFoundException($"Doctor with id: {id} was not found");
             bool hasAppointments = await _db.Appointments.AnyAsync(a => a.DoctorId == id);
             if (hasAppointments)
             {
-                throw new InvalidOperationException("Doctor has appointments and can't be deleted");
+                throw new ConflictException("Doctor has appointments and can't be deleted");
             }
-            _db.Remove(doctor);
+            _db.Doctors.Remove(doctor);
             await _db.SaveChangesAsync();
         }
     }
