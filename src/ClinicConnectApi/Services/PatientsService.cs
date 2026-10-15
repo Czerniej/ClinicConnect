@@ -27,10 +27,6 @@ namespace ClinicConnectApi.Services
         }
         public async Task<PatientResponseDto> CreatePatientAsync(CreatePatientDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.FirstName) || string.IsNullOrWhiteSpace(dto.LastName) || string.IsNullOrWhiteSpace(dto.Pesel))
-            {
-                throw new ArgumentException("Incorrect input");
-            }
             var existingPatient = await _db.Patients.FirstOrDefaultAsync(p => p.Pesel == dto.Pesel);
             if (existingPatient != null)
             {

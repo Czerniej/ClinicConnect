@@ -28,11 +28,6 @@ namespace ClinicConnectApi.Services
         }
         public async Task<DoctorResponseDto> CreateDoctorAsync(CreateDoctorDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.FirstName) || string.IsNullOrWhiteSpace(dto.LastName)
-             || string.IsNullOrWhiteSpace(dto.Specialization) || dto.ConsultationFee <= 0)
-            {
-                throw new ArgumentException("Incorrect input");
-            }
             var doctor = new Doctor
             {
                 FirstName = dto.FirstName,
