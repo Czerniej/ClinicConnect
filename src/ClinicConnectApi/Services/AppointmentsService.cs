@@ -52,7 +52,14 @@ namespace ClinicConnectApi.Services
                 Notes = ""
             };
             _db.Appointments.Add(appointment);
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (ex.IsUniqueConstraintViolation())
+            {
+                throw new ConflictException("Doctor or patient already has an appointment at this date");
+            }
             return new AppointmentResponseDto
             {
                 Id = appointment.Id,
@@ -65,11 +72,8 @@ namespace ClinicConnectApi.Services
         }
         public async Task DeleteAppointmentAsync(int id)
         {
-            var appointment = await _db.Appointments.FindAsync(id);
-            if (appointment == null)
-            {
-                throw new NotFoundException($"Appointment with id: {id} was not found");
-            }
+            var appointment = await _db.Appointments.FindAsync(id)
+                ?? throw new NotFoundException($"Appointment with id: {id} was not found");
             _db.Appointments.Remove(appointment);
             await _db.SaveChangesAsync();
         }

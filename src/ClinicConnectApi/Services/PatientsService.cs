@@ -43,7 +43,14 @@ namespace ClinicConnectApi.Services
                 Pesel = dto.Pesel
             };
             _db.Patients.Add(patient);
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex) when (ex.IsUniqueConstraintViolation())
+            {
+                throw new ConflictException("Patient with this pesel already exists");
+            }
             return new PatientResponseDto
             {
                 Id = patient.Id,
