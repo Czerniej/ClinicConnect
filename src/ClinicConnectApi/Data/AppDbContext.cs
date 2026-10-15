@@ -6,17 +6,13 @@ namespace ClinicConnectApi.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Doctor> Doctors => Set<Doctor>();
+        public DbSet<Patient> Patients => Set<Patient>();
+        public DbSet<Appointment> Appointments => Set<Appointment>();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlite("Data Source=clinicConnectApi.db");
-            }
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }
