@@ -22,6 +22,14 @@ namespace ClinicConnectApi.Services
                 .Select(PatientMappings.ToResponseDto)
                 .ToListAsync();
         }
+        public async Task<PatientResponseDto> GetPatientByIdAsync(int id)
+        {
+            return await _db.Patients
+                .Where(p => p.Id == id)
+                .Select(PatientMappings.ToResponseDto)
+                .FirstOrDefaultAsync()
+                    ?? throw new NotFoundException($"Patient with id: {id} was not found");
+        }
         public async Task<PatientResponseDto> CreatePatientAsync(CreatePatientDto dto)
         {
             var existingPatient = await _db.Patients.FirstOrDefaultAsync(p => p.Pesel == dto.Pesel);
@@ -44,13 +52,7 @@ namespace ClinicConnectApi.Services
             {
                 throw new ConflictException("Patient with this pesel already exists");
             }
-            return new PatientResponseDto
-            {
-                Id = patient.Id,
-                FirstName = patient.FirstName,
-                LastName = patient.LastName,
-                Pesel = patient.Pesel
-            };
+            return await GetPatientByIdAsync(patient.Id);
         }
         public async Task DeletePatientAsync(int id)
         {

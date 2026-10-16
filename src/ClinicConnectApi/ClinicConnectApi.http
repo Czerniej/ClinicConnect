@@ -22,6 +22,9 @@ Delete {{ClinicConnectApi_HostAddress}}/api/doctors/1
 GET {{ClinicConnectApi_HostAddress}}/api/patients
 Accept: application/json
 
+### Get patient by id
+GET {{ClinicConnectApi_HostAddress}}/api/patients/1
+
 ### Add new patient
 POST {{ClinicConnectApi_HostAddress}}/api/patients
 Content-Type: application/json
