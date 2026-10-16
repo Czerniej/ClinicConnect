@@ -1,6 +1,7 @@
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Exceptions;
+using ClinicConnectApi.Mappings;
 using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,9 @@ namespace ClinicConnectApi.Services
         public async Task<IEnumerable<AppointmentResponseDto>> GetAllAppointmentsAsync()
         {
             return await _db.Appointments
-            .Select(a => new AppointmentResponseDto
-            {
-                Id = a.Id,
-                DoctorName = $"{a.Doctor.FirstName} {a.Doctor.LastName}",
-                PatientName = $"{a.Patient.FirstName} {a.Patient.LastName}",
-                AppointmentDate = a.AppointmentDate,
-                IsCompleted = a.IsCompleted,
-                Notes = a.Notes
-            }).ToListAsync();
+                .OrderBy(a => a.AppointmentDate)
+                .Select(AppointmentMappings.ToResponseDto)
+                .ToListAsync();
         }
         public async Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto)
         {
