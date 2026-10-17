@@ -4,6 +4,10 @@
 GET {{ClinicConnectApi_HostAddress}}/api/doctors
 Accept: application/json
 
+###  Get doctor by id
+Get {{ClinicConnectApi_HostAddress}}/api/doctors/1
+Accept: application/json
+
 ### Add new doctor
 POST {{ClinicConnectApi_HostAddress}}/api/doctors
 Content-Type: application/json

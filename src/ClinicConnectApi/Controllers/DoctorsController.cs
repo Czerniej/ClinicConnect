@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Services;
 
@@ -20,11 +22,17 @@ namespace ClinicConnectApi.Controllers
             var doctors = await _doctorsService.GetAllDoctorsAsync();
             return Ok(doctors);
         }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<DoctorResponseDto>> GetById(int id)
+        {
+            var doctor = await _doctorsService.GetDoctorByIdAsync(id);
+            return Ok(doctor);
+        }
         [HttpPost]
         public async Task<ActionResult<DoctorResponseDto>> Create(CreateDoctorDto dto)
         {
             var newDoctor = await _doctorsService.CreateDoctorAsync(dto);
-            return StatusCode(StatusCodes.Status201Created, newDoctor);
+            return CreatedAtAction(nameof(GetById), new { id = newDoctor.Id }, newDoctor);
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)

@@ -22,6 +22,14 @@ namespace ClinicConnectApi.Services
                 .Select(DoctorMappings.ToResponseDto)
                 .ToListAsync();
         }
+        public async Task<DoctorResponseDto> GetDoctorByIdAsync(int id)
+        {
+            return await _db.Doctors
+                .Where(d => d.Id == id)
+                .Select(DoctorMappings.ToResponseDto)
+                .FirstOrDefaultAsync()
+                    ?? throw new NotFoundException($"Doctor with id: {id} was not found");
+        }
         public async Task<DoctorResponseDto> CreateDoctorAsync(CreateDoctorDto dto)
         {
             var doctor = new Doctor
@@ -33,14 +41,7 @@ namespace ClinicConnectApi.Services
             };
             _db.Doctors.Add(doctor);
             await _db.SaveChangesAsync();
-            return new DoctorResponseDto
-            {
-                Id = doctor.Id,
-                FirstName = doctor.FirstName,
-                LastName = doctor.LastName,
-                Specialization = doctor.Specialization,
-                ConsultationFee = doctor.ConsultationFee
-            };
+            return await GetDoctorByIdAsync(doctor.Id);
         }
         public async Task DeleteDoctorAsync(int id)
         {
