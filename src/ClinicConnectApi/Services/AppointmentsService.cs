@@ -35,7 +35,7 @@ namespace ClinicConnectApi.Services
                 .Select(AppointmentMappings.ToResponseDto)
                 .ToListAsync();
         }
-        public async Task<AppointmentResponseDto> GetAppointmentById(int id)
+        public async Task<AppointmentResponseDto> GetAppointmentByIdAsync(int id)
         {
             return await _db.Appointments
                 .Where(a => a.Id == id)
@@ -85,7 +85,7 @@ namespace ClinicConnectApi.Services
             {
                 throw new ConflictException("Doctor or patient already has an appointment at this date");
             }
-            return await GetAppointmentById(appointment.Id);
+            return await GetAppointmentByIdAsync(appointment.Id);
         }
         public async Task<AppointmentResponseDto> CompleteAppointmentAsync(int id, CompleteAppointmentDto dto)
         {
@@ -102,7 +102,7 @@ namespace ClinicConnectApi.Services
             appointment.IsCompleted = true;
             appointment.Notes = dto.Notes;
             await _db.SaveChangesAsync();
-            return await GetAppointmentById(id);
+            return await GetAppointmentByIdAsync(id);
         }
         public async Task DeleteAppointmentAsync(int id)
         {

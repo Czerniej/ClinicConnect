@@ -23,7 +23,7 @@ namespace ClinicConnectApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AppointmentResponseDto>> GetById(int id)
         {
-            var appointment = await _appointmentsService.GetAppointmentById(id);
+            var appointment = await _appointmentsService.GetAppointmentByIdAsync(id);
             return Ok(appointment);
         }
         [HttpPost]
