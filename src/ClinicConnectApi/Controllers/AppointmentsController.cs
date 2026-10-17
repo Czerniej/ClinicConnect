@@ -21,24 +21,34 @@ namespace ClinicConnectApi.Controllers
             return Ok(appointments);
         }
         [HttpGet("{id:int}")]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AppointmentResponseDto>> GetById(int id)
         {
             var appointment = await _appointmentsService.GetAppointmentByIdAsync(id);
             return Ok(appointment);
         }
         [HttpPost]
+        [ProducesResponseType<AppointmentResponseDto>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<AppointmentResponseDto>> Create(CreateAppointmentDto dto)
         {
             var newAppointment = await _appointmentsService.CreateAppointmentAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = newAppointment.Id }, newAppointment);
         }
         [HttpPatch("{id:int}/complete")]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<AppointmentResponseDto>> Complete(int id, CompleteAppointmentDto dto)
         {
             var completed = await _appointmentsService.CompleteAppointmentAsync(id, dto);
             return Ok(completed);
         }
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             await _appointmentsService.DeleteAppointmentAsync(id);
