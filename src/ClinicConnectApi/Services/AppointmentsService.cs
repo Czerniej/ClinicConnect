@@ -8,6 +8,8 @@ using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
+using SQLitePCL;
+
 namespace ClinicConnectApi.Services
 {
     public class AppointmentsService : IAppointmentsService
@@ -84,6 +86,23 @@ namespace ClinicConnectApi.Services
                 throw new ConflictException("Doctor or patient already has an appointment at this date");
             }
             return await GetAppointmentById(appointment.Id);
+        }
+        public async Task<AppointmentResponseDto> CompleteAppointmentAsync(int id, CompleteAppointmentDto dto)
+        {
+            var appointment = await _db.Appointments.FindAsync(id)
+                ?? throw new NotFoundException($"Appointment with id {id} was not found");
+            if (appointment.IsCompleted)
+            {
+                throw new ConflictException("Appointment is already completed");
+            }
+            if (appointment.AppointmentDate > _timeProvider.GetUtcNow().UtcDateTime)
+            {
+                throw new ConflictException("An appointment that hasn't started yet can't be completed");
+            }
+            appointment.IsCompleted = true;
+            appointment.Notes = dto.Notes;
+            await _db.SaveChangesAsync();
+            return await GetAppointmentById(id);
         }
         public async Task DeleteAppointmentAsync(int id)
         {

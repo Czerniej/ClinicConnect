@@ -7,6 +7,7 @@ namespace ClinicConnectApi.Services
         Task<IEnumerable<AppointmentResponseDto>> GetAllAppointmentsAsync();
         Task<AppointmentResponseDto> GetAppointmentById(int id);
         Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto);
+        Task<AppointmentResponseDto> CompleteAppointmentAsync(int id, CompleteAppointmentDto dto);
         Task DeleteAppointmentAsync(int id);
     }
 }

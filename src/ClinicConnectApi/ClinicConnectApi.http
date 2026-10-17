@@ -61,5 +61,13 @@ Content-Type: application/json
     "notes": ""
 }
 
+### Complete appointment
+PATCH {{ClinicConnectApi_HostAddress}}/api/appointments/1/complete
+Content-Type: application/json
+
+{
+    "notes": "Patient is healthy, just bruised"
+}
+
 ### Delete appointment
 DELETE {{ClinicConnectApi_HostAddress}}/api/appointments/1

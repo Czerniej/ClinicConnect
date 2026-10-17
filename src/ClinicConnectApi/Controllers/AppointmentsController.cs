@@ -32,6 +32,12 @@ namespace ClinicConnectApi.Controllers
             var newAppointment = await _appointmentsService.CreateAppointmentAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = newAppointment.Id }, newAppointment);
         }
+        [HttpPatch("{id:int}/complete")]
+        public async Task<ActionResult<AppointmentResponseDto>> Complete(int id, CompleteAppointmentDto dto)
+        {
+            var completed = await _appointmentsService.CompleteAppointmentAsync(id, dto);
+            return Ok(completed);
+        }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
