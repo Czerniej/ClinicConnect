@@ -46,12 +46,15 @@ DELETE {{ClinicConnectApi_HostAddress}}/api/patients/1
 GET {{ClinicConnectApi_HostAddress}}/api/appointments
 Accept: application/json
 
+### Get appointment by id
+GET {{ClinicConnectApi_HostAddress}}/api/appointments/1
+
 ### Add new appointment
 POST {{ClinicConnectApi_HostAddress}}/api/appointments
 Content-Type: application/json
 
 {
-    "doctorId": 3,
+    "doctorId": 1,
     "patientId": 1,
     "appointmentDate": "2026-10-20T14:30:00",
     "isCompleted": false,

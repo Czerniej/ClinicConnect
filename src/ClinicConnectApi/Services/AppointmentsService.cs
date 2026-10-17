@@ -22,6 +22,14 @@ namespace ClinicConnectApi.Services
                 .Select(AppointmentMappings.ToResponseDto)
                 .ToListAsync();
         }
+        public async Task<AppointmentResponseDto> GetAppointmentById(int id)
+        {
+            return await _db.Appointments
+                .Where(a => a.Id == id)
+                .Select(AppointmentMappings.ToResponseDto)
+                .FirstOrDefaultAsync()
+                    ?? throw new NotFoundException($"Appointment with id: {id} was not found");
+        }
         public async Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto)
         {
             var doctor = await _db.Doctors.FindAsync(dto.DoctorId)
@@ -55,15 +63,7 @@ namespace ClinicConnectApi.Services
             {
                 throw new ConflictException("Doctor or patient already has an appointment at this date");
             }
-            return new AppointmentResponseDto
-            {
-                Id = appointment.Id,
-                DoctorName = $"{doctor.FirstName} {doctor.LastName}",
-                PatientName = $"{patient.FirstName} {patient.LastName}",
-                AppointmentDate = appointment.AppointmentDate,
-                IsCompleted = appointment.IsCompleted,
-                Notes = appointment.Notes
-            };
+            return await GetAppointmentById(appointment.Id);
         }
         public async Task DeleteAppointmentAsync(int id)
         {

@@ -20,11 +20,17 @@ namespace ClinicConnectApi.Controllers
             var appointments = await _appointmentsService.GetAllAppointmentsAsync();
             return Ok(appointments);
         }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<AppointmentResponseDto>> GetById(int id)
+        {
+            var appointment = await _appointmentsService.GetAppointmentById(id);
+            return Ok(appointment);
+        }
         [HttpPost]
         public async Task<ActionResult<AppointmentResponseDto>> Create(CreateAppointmentDto dto)
         {
             var newAppointment = await _appointmentsService.CreateAppointmentAsync(dto);
-            return StatusCode(StatusCodes.Status201Created, newAppointment);
+            return CreatedAtAction(nameof(GetById), new { id = newAppointment.Id }, newAppointment);
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
