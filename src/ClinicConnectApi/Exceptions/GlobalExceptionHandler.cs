@@ -20,6 +20,7 @@ namespace ClinicConnectApi.Exceptions
             {
                 NotFoundException => (StatusCodes.Status404NotFound, "Resource not found", exception.Message),
                 ConflictException => (StatusCodes.Status409Conflict, "Conflict", exception.Message),
+                BadRequestException => (StatusCodes.Status400BadRequest, "Bad Response", exception.Message),
                 _ => (StatusCodes.Status500InternalServerError, "An unexpected error ocurred", "Please try again later.")
             };
 
