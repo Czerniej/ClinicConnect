@@ -56,7 +56,7 @@ Content-Type: application/json
 {
     "doctorId": 1,
     "patientId": 1,
-    "appointmentDate": "2026-10-20T14:30:00",
+    "appointmentDate": "2026-10-20T16:30:00",
     "isCompleted": false,
     "notes": ""
 }

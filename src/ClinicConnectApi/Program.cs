@@ -13,6 +13,7 @@ builder.Services.AddScoped<IPatientsService, PatientsService>();
 builder.Services.AddScoped<IAppointmentsService, AppointmentsService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddSingleton(TimeProvider.System);
 var app = builder.Build();
 app.UseExceptionHandler();
 

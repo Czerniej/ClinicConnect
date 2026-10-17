@@ -21,6 +21,10 @@ namespace ClinicConnectApi.Data.Configurations
             
             builder.HasIndex(a => new { a.DoctorId, a.AppointmentDate }).IsUnique();
             builder.HasIndex(a => new { a.PatientId, a.AppointmentDate }).IsUnique();
+            builder.Property(a => a.AppointmentDate)
+                .HasConversion(
+                    toDb => toDb,
+                    fromDb => DateTime.SpecifyKind(fromDb, DateTimeKind.Utc));
         }
     }
 }

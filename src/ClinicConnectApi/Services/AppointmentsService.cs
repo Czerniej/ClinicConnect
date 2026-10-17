@@ -1,3 +1,5 @@
+using System.Net;
+
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Exceptions;
@@ -11,9 +13,18 @@ namespace ClinicConnectApi.Services
     public class AppointmentsService : IAppointmentsService
     {
         private readonly AppDbContext _db;
-        public AppointmentsService(AppDbContext db)
+        private readonly TimeProvider _timeProvider;
+        private static readonly TimeSpan SlotLength = TimeSpan.FromMinutes(30);
+        private static DateTime ToUtc(DateTime value) => value.Kind switch
+        {
+            DateTimeKind.Utc => value,
+            DateTimeKind.Local => value.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
+        };
+        public AppointmentsService(AppDbContext db, TimeProvider timeProvider)
         {
             _db = db;
+            _timeProvider = timeProvider;
         }
         public async Task<IEnumerable<AppointmentResponseDto>> GetAllAppointmentsAsync()
         {
@@ -32,25 +43,34 @@ namespace ClinicConnectApi.Services
         }
         public async Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto)
         {
+            var appointmentDate = ToUtc(dto.AppointmentDate);
+            if(appointmentDate.Ticks % SlotLength.Ticks != 0)
+            {
+                throw new BadRequestException("Appointments must start at full or half hour");
+            }
+            if(appointmentDate <= _timeProvider.GetUtcNow().UtcDateTime)
+            {
+                throw new BadRequestException("Appointment date must be in the future");
+            }
             var doctor = await _db.Doctors.FindAsync(dto.DoctorId)
                 ?? throw new NotFoundException($"Doctor with id: {dto.DoctorId} wos not found");
             var patient = await _db.Patients.FindAsync(dto.PatientId)
                 ?? throw new NotFoundException($"Patient with id: {dto.PatientId} was not found");
-            bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == dto.AppointmentDate);
+            bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == appointmentDate);
             if (isBusyDoctor)
             {
-                throw new NotFoundException("Doctor already has appointment at this date");
+                throw new ConflictException("Doctor already has appointment at this date");
             }
-            bool isBusyPatient = await _db.Appointments.AnyAsync(a => a.PatientId == dto.PatientId && a.AppointmentDate == dto.AppointmentDate);
+            bool isBusyPatient = await _db.Appointments.AnyAsync(a => a.PatientId == dto.PatientId && a.AppointmentDate == appointmentDate);
             if (isBusyPatient)
             {
-                throw new NotFoundException("Patient already has appointment at this date");
+                throw new ConflictException("Patient already has appointment at this date");
             }
             var appointment = new Appointment
             {
                 DoctorId = dto.DoctorId,
                 PatientId = dto.PatientId,
-                AppointmentDate = dto.AppointmentDate,
+                AppointmentDate = appointmentDate,
                 IsCompleted = false,
                 Notes = ""
             };
