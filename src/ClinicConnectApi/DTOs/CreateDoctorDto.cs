@@ -10,7 +10,7 @@ namespace ClinicConnectApi.Dtos
         public string LastName { get; set; } = string.Empty;
         [Required, StringLength(100)]
         public string Specialization { get; set; } = string.Empty;
-        [Range(0, 10000)]
+        [Range(0, double.MaxValue, MinimumIsExclusive = true)]
         public decimal ConsultationFee { get; set; }
     }
 }
