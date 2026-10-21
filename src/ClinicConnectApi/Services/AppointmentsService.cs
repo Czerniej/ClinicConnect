@@ -55,7 +55,7 @@ namespace ClinicConnectApi.Services
                 throw new BadRequestException("Appointment date must be in the future");
             }
             var doctor = await _db.Doctors.FindAsync(dto.DoctorId)
-                ?? throw new NotFoundException($"Doctor with id: {dto.DoctorId} wos not found");
+                ?? throw new NotFoundException($"Doctor with id: {dto.DoctorId} was not found");
             var patient = await _db.Patients.FindAsync(dto.PatientId)
                 ?? throw new NotFoundException($"Patient with id: {dto.PatientId} was not found");
             bool isBusyDoctor = await _db.Appointments.AnyAsync(a => a.DoctorId == dto.DoctorId && a.AppointmentDate == appointmentDate);
