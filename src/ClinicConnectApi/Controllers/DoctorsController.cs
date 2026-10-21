@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Services;
 

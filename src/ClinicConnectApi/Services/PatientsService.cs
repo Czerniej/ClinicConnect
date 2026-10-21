@@ -10,6 +10,7 @@ namespace ClinicConnectApi.Services
 {
     public class PatientsService : IPatientsService
     {
+        private const string DuplicatePeselMessage = "Patient with this PESEL already exists";
         private readonly AppDbContext _db;
         public PatientsService(AppDbContext db)
         {
@@ -35,7 +36,7 @@ namespace ClinicConnectApi.Services
             var existingPatient = await _db.Patients.FirstOrDefaultAsync(p => p.Pesel == dto.Pesel);
             if (existingPatient != null)
             {
-                throw new ConflictException("Patient with this pesel already exists");
+                throw new ConflictException(DuplicatePeselMessage);
             }
             var patient = new Patient
             {
@@ -50,7 +51,7 @@ namespace ClinicConnectApi.Services
             }
             catch(DbUpdateException ex) when (ex.IsUniqueConstraintViolation())
             {
-                throw new ConflictException("Patient with this pesel already exists");
+                throw new ConflictException(DuplicatePeselMessage);
             }
             return await GetPatientByIdAsync(patient.Id);
         }

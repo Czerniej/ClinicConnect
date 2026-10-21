@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AppDbContext>((ServiceProvider, options) =>
-    options.UseSqlite(ServiceProvider.GetRequiredService<IConfiguration>().
+builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+    options.UseSqlite(serviceProvider.GetRequiredService<IConfiguration>().
         GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IDoctorsService, DoctorsService>();

@@ -1,5 +1,3 @@
-using System.Net;
-
 using ClinicConnectApi.Data;
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Exceptions;
@@ -8,8 +6,6 @@ using ClinicConnectApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-using SQLitePCL;
-
 namespace ClinicConnectApi.Services
 {
     public class AppointmentsService : IAppointmentsService
@@ -17,12 +13,6 @@ namespace ClinicConnectApi.Services
         private readonly AppDbContext _db;
         private readonly TimeProvider _timeProvider;
         private static readonly TimeSpan SlotLength = TimeSpan.FromMinutes(30);
-        private static DateTime ToUtc(DateTime value) => value.Kind switch
-        {
-            DateTimeKind.Utc => value,
-            DateTimeKind.Local => value.ToUniversalTime(),
-            _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
-        };
         public AppointmentsService(AppDbContext db, TimeProvider timeProvider)
         {
             _db = db;
@@ -74,7 +64,7 @@ namespace ClinicConnectApi.Services
                 PatientId = dto.PatientId,
                 AppointmentDate = appointmentDate,
                 IsCompleted = false,
-                Notes = ""
+                Notes = string.Empty
             };
             _db.Appointments.Add(appointment);
             try
@@ -111,5 +101,11 @@ namespace ClinicConnectApi.Services
             _db.Appointments.Remove(appointment);
             await _db.SaveChangesAsync();
         }
+        private static DateTime ToUtc(DateTime value) => value.Kind switch
+        {
+            DateTimeKind.Utc => value,
+            DateTimeKind.Local => value.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
+        };
     }
 }
