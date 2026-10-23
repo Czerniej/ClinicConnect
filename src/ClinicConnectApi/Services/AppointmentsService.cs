@@ -36,11 +36,11 @@ namespace ClinicConnectApi.Services
         public async Task<AppointmentResponseDto> CreateAppointmentAsync(CreateAppointmentDto dto)
         {
             var appointmentDate = ToUtc(dto.AppointmentDate);
-            if(appointmentDate.Ticks % SlotLength.Ticks != 0)
+            if (appointmentDate.Ticks % SlotLength.Ticks != 0)
             {
                 throw new BadRequestException("Appointments must start at full or half hour");
             }
-            if(appointmentDate <= _timeProvider.GetUtcNow().UtcDateTime)
+            if (appointmentDate <= _timeProvider.GetUtcNow().UtcDateTime)
             {
                 throw new BadRequestException("Appointment date must be in the future");
             }

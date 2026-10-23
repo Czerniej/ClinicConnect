@@ -1,8 +1,9 @@
 using ClinicConnectApi.Data;
-using ClinicConnectApi.Services;
 using ClinicConnectApi.Exceptions;
+using ClinicConnectApi.Services;
 
 using Microsoft.EntityFrameworkCore;
+
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);

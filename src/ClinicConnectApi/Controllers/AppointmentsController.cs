@@ -53,7 +53,7 @@ namespace ClinicConnectApi.Controllers
         {
             await _appointmentsService.DeleteAppointmentAsync(id);
             return NoContent();
-            
+
         }
     }
 }

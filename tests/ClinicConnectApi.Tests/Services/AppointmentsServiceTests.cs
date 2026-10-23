@@ -56,7 +56,7 @@ namespace ClinicConnectApi.Tests.Services
         public async Task GetAllAppointmentsAsync_ReturnsAppointmentsOrderedByDate()
         {
             var (doctor, patient) = await SeedAsync();
-            var late  = new DateTime(2026, 1, 3, 12, 0, 0, DateTimeKind.Utc);
+            var late = new DateTime(2026, 1, 3, 12, 0, 0, DateTimeKind.Utc);
             var early = new DateTime(2026, 1, 2, 10, 0, 0, DateTimeKind.Utc);
             await _service.CreateAppointmentAsync(Dto(doctor.Id, patient.Id, late));
             await _service.CreateAppointmentAsync(Dto(doctor.Id, patient.Id, early));
@@ -85,7 +85,7 @@ namespace ClinicConnectApi.Tests.Services
             var (doctor, patient) = await SeedAsync();
             var appointmentDate = new DateTime(2025, 12, 31, 10, 0, 0, DateTimeKind.Utc);
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
-        
+
             await Assert.ThrowsAsync<BadRequestException>(() => _service.CreateAppointmentAsync(dto));
         }
         [Fact]
@@ -94,7 +94,7 @@ namespace ClinicConnectApi.Tests.Services
             var (doctor, patient) = await SeedAsync();
             var appointmentDate = new DateTime(2026, 10, 20, 16, 1, 5, DateTimeKind.Utc);
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
-        
+
             await Assert.ThrowsAsync<BadRequestException>(() => _service.CreateAppointmentAsync(dto));
         }
         [Fact]
@@ -112,7 +112,7 @@ namespace ClinicConnectApi.Tests.Services
             var (doctor, patient) = await SeedAsync();
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Utc);
             var dto = Dto(doctor.Id, 999, appointmentDate);
-        
+
             await Assert.ThrowsAsync<NotFoundException>(() => _service.CreateAppointmentAsync(dto));
         }
         [Fact]
@@ -131,7 +131,7 @@ namespace ClinicConnectApi.Tests.Services
 
             var dto1 = Dto(doctor.Id, patient1.Id, appointmentDate);
             var dto2 = Dto(doctor.Id, patient2.Id, appointmentDate);
-        
+
             await _service.CreateAppointmentAsync(dto1);
 
             await Assert.ThrowsAsync<ConflictException>(() => _service.CreateAppointmentAsync(dto2));
@@ -139,7 +139,7 @@ namespace ClinicConnectApi.Tests.Services
         [Fact]
         public async Task CreateAppointmentAsync_WhenPatientIsBusy_ThrowsConflict()
         {
-            var(doctor1, patient) = await SeedAsync();
+            var (doctor1, patient) = await SeedAsync();
             var doctor2 = new Doctor
             {
                 FirstName = "Cal",
@@ -150,10 +150,10 @@ namespace ClinicConnectApi.Tests.Services
             _db.Doctors.Add(doctor2);
             await _db.SaveChangesAsync();
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Utc);
-        
+
             var dto1 = Dto(doctor1.Id, patient.Id, appointmentDate);
             var dto2 = Dto(doctor2.Id, patient.Id, appointmentDate);
-        
+
             await _service.CreateAppointmentAsync(dto1);
             await Assert.ThrowsAsync<ConflictException>(() => _service.CreateAppointmentAsync(dto2));
         }
@@ -178,10 +178,10 @@ namespace ClinicConnectApi.Tests.Services
             _db.Patients.Add(patient2);
             await _db.SaveChangesAsync();
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Utc);
-        
+
             var dto1 = Dto(doctor1.Id, patient1.Id, appointmentDate);
             var dto2 = Dto(doctor2.Id, patient2.Id, appointmentDate);
-        
+
             var result1 = await _service.CreateAppointmentAsync(dto1);
             var result2 = await _service.CreateAppointmentAsync(dto2);
 
@@ -198,9 +198,9 @@ namespace ClinicConnectApi.Tests.Services
             var (doctor, patient) = await SeedAsync();
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Unspecified);
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
-        
+
             var result = await _service.CreateAppointmentAsync(dto);
-        
+
             Assert.Equal(new DateTime(2026, 10, 20, 16, 0, 0), result.AppointmentDate);
             Assert.Equal(DateTimeKind.Utc, result.AppointmentDate.Kind);
         }
@@ -211,7 +211,7 @@ namespace ClinicConnectApi.Tests.Services
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Unspecified);
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
             var appointment = await _service.CreateAppointmentAsync(dto);
-        
+
             await Assert.ThrowsAsync<ConflictException>(() => _service.CompleteAppointmentAsync(appointment.Id, new CompleteAppointmentDto
             {
                 Notes = "Patient is healthy"
@@ -225,7 +225,7 @@ namespace ClinicConnectApi.Tests.Services
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
             var appointment = await _service.CreateAppointmentAsync(dto);
             _time.Advance(TimeSpan.FromDays(2));
-        
+
             var result = await _service.CompleteAppointmentAsync(appointment.Id, new CompleteAppointmentDto
             {
                 Notes = "Patient is healthy"
@@ -272,7 +272,7 @@ namespace ClinicConnectApi.Tests.Services
             var appointmentDate = new DateTime(2026, 10, 20, 16, 0, 0, DateTimeKind.Utc);
             var dto = Dto(doctor.Id, patient.Id, appointmentDate);
             var appointment = await _service.CreateAppointmentAsync(dto);
-            
+
             Assert.Equal("Till Lindemann", appointment.DoctorName);
             Assert.Equal("Nico Sallach", appointment.PatientName);
             Assert.Equal(dto.AppointmentDate, appointment.AppointmentDate);

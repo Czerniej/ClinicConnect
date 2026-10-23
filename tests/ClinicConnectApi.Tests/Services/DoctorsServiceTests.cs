@@ -128,7 +128,7 @@ namespace ClinicConnectApi.Tests.Services
                 AppointmentDate = new DateTime(2026, 1, 2, 10, 0, 0, DateTimeKind.Utc)
             });
             await _db.SaveChangesAsync();
-        
+
             await Assert.ThrowsAsync<ConflictException>(() => _service.DeleteDoctorAsync(doctor.Id));
             var stillThere = await _service.GetDoctorByIdAsync(doctor.Id);
             Assert.Equal(doctor.Id, stillThere.Id);

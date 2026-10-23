@@ -1,7 +1,7 @@
+using System.Linq.Expressions;
+
 using ClinicConnectApi.Dtos;
 using ClinicConnectApi.Models;
-
-using System.Linq.Expressions;
 
 namespace ClinicConnectApi.Mappings
 {

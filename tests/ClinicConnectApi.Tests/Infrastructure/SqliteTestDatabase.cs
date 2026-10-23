@@ -16,8 +16,8 @@ namespace ClinicConnectApi.Tests.Infrastructure
             _options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseSqlite(_connection)
                 .Options;
-                using var context = CreateContext();
-                context.Database.Migrate();
+            using var context = CreateContext();
+            context.Database.Migrate();
         }
         public AppDbContext CreateContext() => new(_options);
         public void Dispose() => _connection.Dispose();

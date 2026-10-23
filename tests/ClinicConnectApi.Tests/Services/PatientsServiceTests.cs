@@ -51,9 +51,9 @@ namespace ClinicConnectApi.Tests.Services
         public async Task GetAllPatientsAsync_ReturnsPatientsOrderedByLastName()
         {
             var (patient1, patient2) = await SeedAsync();
-        
+
             var result = await _service.GetAllPatientsAsync();
-        
+
             Assert.Equal(new[] { patient2.LastName, patient1.LastName }, result.Select(p => p.LastName));
         }
         [Fact]
@@ -77,9 +77,9 @@ namespace ClinicConnectApi.Tests.Services
         {
             var dto1 = Dto();
             var dto2 = Dto("Sansa", "Stark", "01320215673");
-            
+
             await _service.CreatePatientAsync(dto1);
-        
+
             await Assert.ThrowsAsync<ConflictException>(() => _service.CreatePatientAsync(dto2));
         }
         [Fact]
@@ -87,10 +87,10 @@ namespace ClinicConnectApi.Tests.Services
         {
             var dto1 = Dto();
             var dto2 = Dto("Oberyn", "Martell", "01312014514");
-        
+
             var result1 = await _service.CreatePatientAsync(dto1);
             var result2 = await _service.CreatePatientAsync(dto2);
-        
+
             Assert.Equal("Brandon", result1.FirstName);
             Assert.Equal("Stark", result1.LastName);
             Assert.Equal("01320215673", result1.Pesel);
@@ -135,7 +135,7 @@ namespace ClinicConnectApi.Tests.Services
                 AppointmentDate = new DateTime(2026, 1, 2, 10, 0, 0, DateTimeKind.Utc)
             });
             await _db.SaveChangesAsync();
-        
+
             await Assert.ThrowsAsync<ConflictException>(() => _service.DeletePatientAsync(patient.Id));
             var stillThere = await _service.GetPatientByIdAsync(patient.Id);
             Assert.Equal(patient.Id, stillThere.Id);

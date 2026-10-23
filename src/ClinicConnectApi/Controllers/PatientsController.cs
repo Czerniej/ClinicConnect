@@ -35,7 +35,7 @@ namespace ClinicConnectApi.Controllers
         public async Task<ActionResult<PatientResponseDto>> Create(CreatePatientDto dto)
         {
             var newPatient = await _patientsService.CreatePatientAsync(dto);
-            return CreatedAtAction(nameof(GetById), new {id = newPatient.Id}, newPatient);
+            return CreatedAtAction(nameof(GetById), new { id = newPatient.Id }, newPatient);
         }
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

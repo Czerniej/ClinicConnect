@@ -49,7 +49,7 @@ namespace ClinicConnectApi.Services
             {
                 await _db.SaveChangesAsync();
             }
-            catch(DbUpdateException ex) when (ex.IsUniqueConstraintViolation())
+            catch (DbUpdateException ex) when (ex.IsUniqueConstraintViolation())
             {
                 throw new ConflictException(DuplicatePeselMessage);
             }

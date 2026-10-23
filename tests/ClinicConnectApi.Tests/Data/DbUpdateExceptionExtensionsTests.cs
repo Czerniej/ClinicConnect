@@ -24,10 +24,10 @@ namespace ClinicConnectApi.Tests.Data
         {
             _db.Patients.Add(new Patient { FirstName = "Henry", LastName = "Skalitz", Pesel = "44051401359" });
             await _db.SaveChangesAsync();
-        
+
             _db.Patients.Add(new Patient { FirstName = "Jan", LastName = "Hus", Pesel = "44051401359" });
             var exception = await Assert.ThrowsAsync<DbUpdateException>(() => _db.SaveChangesAsync());
-        
+
             Assert.True(exception.IsUniqueConstraintViolation());
         }
     }

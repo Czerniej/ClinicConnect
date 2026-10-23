@@ -24,7 +24,7 @@ namespace ClinicConnectApi.Exceptions
                 _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred", "Please try again later.")
             };
 
-            if(statusCode == StatusCodes.Status500InternalServerError)
+            if (statusCode == StatusCodes.Status500InternalServerError)
             {
                 _logger.LogError(exception, "Unhandled exception for {Method} {Path}",
                     httpContext.Request.Method, httpContext.Request.Path);
@@ -32,7 +32,8 @@ namespace ClinicConnectApi.Exceptions
 
             httpContext.Response.StatusCode = statusCode;
 
-            return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext{
+            return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+            {
                 HttpContext = httpContext,
                 Exception = exception,
                 ProblemDetails = new ProblemDetails

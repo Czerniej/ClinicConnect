@@ -9,11 +9,11 @@ namespace ClinicConnectApi.Validation
         public PeselAttribute() : base("PESEL must be 11 digits with a valid checksum") { }
         public override bool IsValid(object? value)
         {
-            if(value is null)
+            if (value is null)
             {
                 return true;
             }
-            if(value is not string pesel || pesel.Length != 11 || !pesel.All(char.IsAsciiDigit))
+            if (value is not string pesel || pesel.Length != 11 || !pesel.All(char.IsAsciiDigit))
             {
                 return false;
             }
